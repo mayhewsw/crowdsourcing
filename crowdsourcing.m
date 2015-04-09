@@ -1,13 +1,15 @@
 % crowdsourcing.
+close all
+clear
 
 %% Parameters Section
 
 % number of instances to average over
-instances = 100;
-n=250;
-m=250;
-a = 0.3;
-b = 0.95;
+instances = 10;
+n=100;
+m=200;
+alpha = 6;
+beta = 2;
 
 % max size l to run to
 lmax = 15;
@@ -27,13 +29,15 @@ for l=2:lmax
         
         % task labels
         t = sign( rand(n,1)-0.5 );
+        %t = ones(n,1); % wlog
         
         % worker reliabilities
-        p = a+(b-a)*rand(m,1);
+        p = 0.1+0.9*betarnd(alpha,beta,m,1);
         
         [A,E] = generate_graph(p,t,l);
        
-        [~, tHat_bp, T_bp] = simplified_bp(A);
+        %[~, tHat_bp, T_bp] = simplified_bp(A);
+        tHat_bp = ones(n,1);
         T_bp = 1;
         error_bp = sum(tHat_bp ~= t) / n;
         avgerror_bp = avgerror_bp + error_bp;
@@ -41,8 +45,7 @@ for l=2:lmax
         error_mv = sum(sign(sum(A, 2)) ~= t) / n;
         avgerror_mv = avgerror_mv + error_mv;
         
-        %[~, tHat_pi] = power_iteration(A);
-        tHat_pi = ones(m,1);
+        [~, tHat_pi] = power_iteration(A);
         error_pi = sum(tHat_pi ~= t) / n;
         avgerror_pi = avgerror_pi + error_pi;
    
@@ -62,4 +65,8 @@ legend('Simplified BP', 'Majority Voting', 'Power Iteration');
 title(sprintf('Average Error over %d instances, each with %d iterations. m=%d, n=%d', instances, T_bp, m, n))
 xlabel('l');
 ylabel('P(Error)');
+
+annotation('textbox', [0.14,0.14,0.14,0.05],...
+           'String', sprintf('accuracy at l=15: %f', runs(1,end)));
+
 
