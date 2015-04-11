@@ -1,0 +1,232 @@
+%%
+%% This is file `ba.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% ba.dtx  (with options: `basty')
+%% ===========================================================================
+%% Bayesian Analysis Journal document class and packages for use with LaTeX 2e
+%%
+%% Style files created by  
+%% Copyright 2001 Stata Corporation 
+%% 4905 Lakeway Drive
+%% College Station, Texas 77845 USA
+%% http://www.stata.com
+%% stata@stata.com
+%% 
+%% Some macros and environments are modified versions of those given in
+%% classes.dtx v1.4a 1999/01/07, copyrighted by The LaTeX3 Project.
+%% 
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%%
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{ba}
+              [2003/03/26 v1.19
+ Bayesian Analysis styles package]
+\def\ba@Warning#1{\PackageWarning{ba}{#1}}
+\def\ba@WarningNoLine#1{\PackageWarningNoLine{ba}{#1}}
+\def\ba@Info#1{\typeout{#1}\PackageInfo{ba}{#1}}
+\newif\ifba@opt@bib
+\ba@opt@bibtrue
+\DeclareOption{bib}{\relax}
+\DeclareOption{nobib}{\ba@opt@bibfalse}
+\DeclareRobustCommand\em
+        {\@nomath\em \ifdim \fontdimen\@ne\font >\z@
+                       \upshape \else \slshape \fi}
+\newif\ifba@opt@fancy
+\DeclareOption{fancy}{\ba@opt@fancytrue}
+\DeclareOption{nofancy}{\ba@opt@fancyfalse}
+\newif\ifba@opt@crop
+\DeclareOption{crop}{\ba@opt@croptrue}
+\DeclareOption{nocrop}{\ba@opt@cropfalse}
+\newif\ifba@opt@reprints
+\DeclareOption{reprints}{\ba@opt@reprintstrue}
+\DeclareOption{noreprints}{\ba@opt@reprintsfalse}
+\newif\ifba@pdftex
+\ifx\pdfoutput\ba@undefined
+\else
+  \ba@pdftextrue
+\fi
+\def\ba@opt@ptsize{10pt}
+\DeclareOption{10pt}{\relax}
+\DeclareOption{11pt}{\def\ba@opt@ptsize{11pt}}
+\DeclareOption{12pt}{\def\ba@opt@ptsize{12pt}}
+\let\baefinalopt=\ba@undefined
+\let\bafinalopt=\ba@undefined
+\ExecuteOptions{}
+\ProcessOptions\relax
+\RequirePackage{calc}[1998/07/07]
+\RequirePackage{ifthen}[1999/09/10]
+\ifba@pdftex
+  \ba@Warning{crop.sty not being used with pdflatex}
+  \ba@opt@cropfalse
+\fi
+\ifba@opt@crop
+  \RequirePackage[lettercenter]{crop}[1999/05/15]
+  \renewcommand*\CROP@@info{\relax}
+\fi
+\ifba@opt@bib
+  \RequirePackage{natbib}[1999/05/28]
+  \RequirePackage{chapterbib}[1999/04/29]
+  \bibpunct{(}{)}{;}{a}{}{,}
+\fi
+\newcommand{\inserttype}[2][]{\relax}
+\def\inserttag{notag}
+\renewcommand{\author}[2]{\gdef\@author{#2}}
+\def\land{%
+  \end{tabular}%
+  \hskip 1em \@plus.17fil%
+  \begin{tabular}[t]{@{}l@{}}%
+}
+\def\cand{%
+  \end{tabular}%
+  \hskip 1em \@plus.17fil%
+  \begin{tabular}[t]{@{}c@{}}%
+}
+\def\rand{%
+  \end{tabular}%
+  \hskip 1em \@plus.17fil%
+  \begin{tabular}[t]{@{}r@{}}%
+}
+\renewcommand\title[2][]{\gdef\@title{#2}}
+\newcommand{\bathisheadings}[6]{\relax}
+\newcommand{\keywords}[1]{%
+  \par%
+  \noindent%
+  {\small {\sffamily\bfseries Keywords:} #1}%
+}
+\newenvironment{summary}{%
+  \small%
+  \noindent%
+  {\sffamily\bfseries Summary.}%
+}{\par}
+\newenvironment{aboutauthor}{%
+  \vskip 0.5\baselineskip\small%
+  {\noindent \normalfont\sffamily\bfseries About the Author}\par%
+  \begingroup\parindent 0pt\parskip 0.5\baselineskip%
+}
+{\endgroup}
+\newenvironment{aboutauthors}{%
+  \vskip 0.5\baselineskip\small%
+  {\noindent\normalfont\sffamily\bfseries About the Authors}\par%
+  \begingroup\parindent 0pt\parskip 0.5\baselineskip%
+}
+{\endgroup}
+\newenvironment{acknowledgement}{%
+  \vskip 0.5\baselineskip\small%
+  {\noindent\normalfont\sffamily\bfseries Acknowledgments}\par%
+  \begingroup\parindent 0pt\parskip 0.5\baselineskip%
+}
+{\endgroup}
+\AtBeginDocument{
+  \let\ba@caption\caption
+  \def\caption{%
+    \ifthenelse{\equal{\@captype}{figure}}{\unskip}{\relax}%
+    \ba@caption
+  }
+}
+\ifba@opt@bib
+  \newdimen\bibindent
+  \setlength\bibindent{1.5em}
+  \def\bibname{References}
+  \newcommand\babibsection[1][]{%
+    \ifthenelse{\equal{#1}{}}{%
+      \def\bibsection{\section{\bibname}}%
+    }{%
+      \def\bibsection{\section*{\bibname}}%
+    }
+  }
+\fi
+\def\defaultoffset{1in}
+\newlength{\ba@pgheight}
+\newlength{\ba@pgwidth}
+\setlength{\ba@pgheight}{9.25in}
+\setlength{\ba@pgwidth}{7.25in}
+\def\ba@setpaperdim{
+  \setlength{\paperheight}{\ba@pgheight}
+  \setlength{\paperwidth}{\ba@pgwidth}
+}
+\newcommand{\bamakecrop}[1][baempty]{%
+  \ifthenelse{\equal{#1}{baempty}}{%
+    \ifx\baefinalopt\ba@undefined \crop[cam]%
+    \else \crop[frame]%
+    \fi%
+  }{%
+    \crop[#1]%
+  }%
+}
+\ifba@opt@crop
+  \ba@setpaperdim
+\else
+  \newcommand{\crop}[1][empty]{\ba@Info{crop.sty not loaded}}
+\fi
+\newlength{\ba@voffset}\setlength{\ba@voffset}{0.25in}
+\newlength{\ba@hoffset}\setlength{\ba@hoffset}{\defaultoffset}
+\ifba@pdftex
+  \setlength{\paperheight}{11in}
+  \setlength{\paperwidth}{8.5in}
+  \setlength{\voffset}{0.5\paperheight-0.5\ba@pgheight}
+  \setlength{\hoffset}{0.5\paperwidth-0.5\ba@pgwidth}
+\fi
+\setlength{\oddsidemargin}{0pt}
+\setlength{\evensidemargin}{0pt}
+\newlength{\ba@topmargin}\setlength{\ba@topmargin}{0pt}
+\ifba@pdftex
+  \setlength{\topmargin}{\ba@topmargin-\defaultoffset}
+\else
+  \setlength{\topmargin}{\ba@topmargin-\defaultoffset+\ba@voffset}
+\fi
+\setlength{\headheight}{44pt}
+\setlength{\headsep}{14pt}
+\setlength{\marginparsep}{0pt}
+\setlength{\marginparwidth}{0pt}
+\setlength{\footskip}{30pt}
+\setlength{\textheight}%
+  {\ba@pgheight-2\ba@voffset-\ba@topmargin-\headheight-\headsep-\footskip}
+\setlength{\textwidth}%
+ {\ba@pgwidth-2\ba@hoffset-\oddsidemargin-\marginparsep-\marginparwidth}
+\ifba@opt@crop
+  \relax
+\else
+  \ifba@pdftex
+    \relax
+  \else
+    \setlength{\paperheight}{11in}
+    \setlength{\paperwidth}{8.5in}
+    \setlength{\topmargin}{0pt}
+    \setlength{\voffset}{0pt}
+    \setlength{\hoffset}{0.5\paperwidth-0.5\textwidth-1in}
+  \fi
+\fi
+\newlength{\banoheadlength}
+\setlength{\parskip}{0.5\baselineskip}
+\ifx\baefinalopt\ba@undefined \else
+  \def\forcebftt{\relax}
+\fi
+\newcommand\basetissue[4]{\relax}
+\AtBeginDocument{%
+  \IfFileExists{editor.sty}{%
+    \ba@Info{automatically inputting editor.sty}\usepackage{editor}%
+  }{}%
+  \IfFileExists{ba.cfg}{%
+    \ba@Info{automatically inputting ba.cfg}\input{ba.cfg}%
+  }{}%
+}
+\endinput
+%%
+%% End of file `ba.sty'.

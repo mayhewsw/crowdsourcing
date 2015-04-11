@@ -1,0 +1,107 @@
+\documentclass[11pt]{article}
+%\usepackage{aistats2014}
+
+\usepackage{fullpage,color}
+\usepackage{graphicx,amsmath,framed} % jeffe,handout,handout  ,
+\usepackage{algorithm2e,framed}
+% ge[utf8]{inputenc}		% Allow some non-ASCII Unicode in source
+\usepackage{amsfonts,amssymb,hyperref}
+\usepackage{framed}
+\usepackage{natbib}
+\usepackage{wrapfig,multirow}
+\newtheorem{lemma}{Lemma}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proof}{Proof}
+\newtheorem{answer}{Answer}
+\newtheorem{corollary}{Corollary}
+\newtheorem{definition}{Definition}
+\linespread{1.2}
+\newif\iflogvar
+\logvartrue
+
+% If your paper is accepted, change the options for the package
+% aistats2014 as follows:
+%
+%\usepackage[accepted]{aistats2014}
+%
+% This option will print headings for the title of your paper and
+% headings for the authors names, plus a copyright note at the end of
+% the first column of the first page.
+
+\begin{document}
+
+% If your paper is accepted and the title of your paper is very long,
+% the style will print as headings an error message. Use the following
+% command to supply a shorter title of your paper so that it can be
+% used as headings.
+%
+%\runningtitle{I use this title instead because the last one was very long}
+
+% If your paper is accepted and the number of authors is large, the
+% style will print as headings an error message. Use the following
+% command to supply a shorter version of the authors names so that
+% they can be used as headings (for example, use only the surnames)
+%
+%\runningauthor{Surname 1, Surname 2, Surname 3, ...., Surname n}
+
+%\twocolumn[
+
+%\aistatstitle{ Clustering With Side Information: \\ From Probabilistic to Deterministic Algorithms }
+
+%\aistatsauthor{ Anonymous Author 1 \And Anonymous Author 2 \And Anonymous Author 3 }
+
+%\aistatsaddress{ Unknown Institution 1 \And Unknown Institution 2 \And Unknown Institution 3 } ]
+
+\title{Crowdsourcing Algorithms: \\Summary and Comparisons}
+
+\maketitle
+
+\begin{abstract}
+Sid
+\end{abstract}
+
+\section{Introduction}
+[TODO]
+
+\section{Belief Propagation}
+[TODO: explanation about derivations]
+
+$$
+\psi_{ij}(t_i, p_j) = p_j \mathbf{I} \left\lbrace  A_{ij}=  t_i  \right\rbrace +  (1-p_j ) \mathbf{I} \left\lbrace  A_{ij} \neq  t_i  \right\rbrace
+$$
+
+$$
+\mathbb{F}_{mf}(b) = \sum_{(i, j) \in E} \sum_{t_i, p_j} b_i^L(t_i) b_j^R(p_j) \psi_{ij}(t_i, p_j) + \sum_{i \in V_L} \sum_{t_i} b_i^L(t_i)  \ln b_i^L(t_i) +  \sum_{j \in V_R} \sum_{p_j} b_j^R(p_j)  \ln b_j^R(p_j)
+$$
+$$
+\mathcal{L} = \mathbb{F}_{mf}(b) - \sum_{i \in V_L} \lambda_i^L \left\lbrace  \sum_{t_i} b_i^L(t_i)  - 1  \right\rbrace - \sum_{j \in V_R} \lambda_j^R \left\lbrace  \sum_{p_j} b_j^R(p_j)  - 1  \right\rbrace
+$$
+
+$$
+\begin{cases}
+\frac{\partial \mathcal{L}}{\partial b_i^L} = \sum_{j \in V_R} \sum_{p_j}  b_j^R(p_j) \psi_{ij}(t_i, p_j) +  b_i^L(t_i) +1 - \lambda_i^L  = 0 \\ 
+\frac{\partial \mathcal{L}}{\partial b_j^R} = \sum_{i \in V_L} \sum_{t_i}  b_i^L(t_i) \psi_{ij}(t_i, p_j) +  b_j^R(p_j) +1 - \lambda_j^R  = 0  
+\end{cases}
+$$
+
+$$
+\Rightarrow  
+\begin{cases}
+b_i^L(t_i) \propto  \exp \left\lbrace  - \sum_{j \in V_R} \sum_{p_j}  b_j^R(p_j) \psi_{ij}(t_i, p_j) \right\rbrace \\ 
+b_j^R(p_j) \propto \exp \left\lbrace  - \sum_{i \in V_L} \sum_{t_i}  b_i^L(t_i) \psi_{ij}(t_i, p_j)   \right\rbrace 
+\end{cases}
+$$
+
+
+\section{Experiments}
+[TODO]
+
+\section*{Acknowledgment}
+The authors would like to thank Ke Jiang for providing the the data used in their work. We also thank Shyam Upadhyay and Daphne Tsatsoulis for helpful comments on the draft. 
+
+\bibliographystyle{ba}
+% argument is your BibTeX string definitions and bibliography database(s)
+\bibliography{ref}
+
+
+\end{document}
