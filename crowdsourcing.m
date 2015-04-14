@@ -41,9 +41,9 @@ for l=2:lmax
         error_em = sum(tHat_em ~= t) / n;
         avgerror_em = avgerror_em + error_em;
         
-        %[~, tHat_bp, T_bp] = simplified_bp(A);
-        tHat_bp = ones(n,1);
-        T_bp = 1;
+        [~, tHat_bp, T_bp] = simplified_bp(A);
+        %tHat_bp = ones(n,1);
+        %T_bp = 1;
         error_bp = sum(tHat_bp ~= t) / n;
         avgerror_bp = avgerror_bp + error_bp;
         

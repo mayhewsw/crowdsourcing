@@ -34,7 +34,7 @@ end
 pHat(isnan(pHat)) = 0 ;
 
 
-for iter=1:100
+for iter=1:10
     
     % E step
     for i=1:n
@@ -81,10 +81,12 @@ end
 % get the max indices for each row
 [~, tHat] = max(q, [], 2);
 
-% convert these (1s and 2s) to 1 and -1;
+% convert these (1s and 2s) to -1s and 1s respectively;
+% (note that this is backwards: the first column is P(t=+1) and the 
+% second column is P(t=-1))
 tHat = (tHat - 1)*2 - 1;
 
-% this is strange... somehow I have it backwards????
+% since it is backwards, reverse it.
 tHat = -tHat;
 end
 
