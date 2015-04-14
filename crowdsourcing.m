@@ -7,15 +7,15 @@ clear
 % number of instances to average over
 instances = 10;
 n=100;
-m=200;
+m=100;
 alpha = 6;
 beta = 2;
 
 % max size l to run to
 lmax = 15;
 
-% used to store 2 runs: simplified BP, and Majority Voting
-runs = zeros(3, lmax-1);
+% used to store all runs. 
+runs = zeros(4, lmax-1);
 
 %% Algorithm Section
 for l=2:lmax
@@ -23,6 +23,7 @@ for l=2:lmax
     avgerror_bp = 0;
     avgerror_mv = 0;
     avgerror_pi = 0;
+    avgerror_em = 0;
     
     % each iteration of this loop is a completely new setup of the problem.
     for dontcare = 1:instances
@@ -36,6 +37,10 @@ for l=2:lmax
         
         [A,E] = generate_graph(p,t,l);
        
+        [~, tHat_em] = em(A);
+        error_em = sum(tHat_em ~= t) / n;
+        avgerror_em = avgerror_em + error_em;
+        
         %[~, tHat_bp, T_bp] = simplified_bp(A);
         tHat_bp = ones(n,1);
         T_bp = 1;
@@ -54,14 +59,15 @@ for l=2:lmax
     runs(1, l-1) = avgerror_bp / instances;
     runs(2, l-1) = avgerror_mv / instances;
     runs(3, l-1) = avgerror_pi / instances;
+    runs(4, l-1) = avgerror_em / instances;
     
     
     fprintf('l=%d, Avg BP error: %f, Avg mv error: %f\n', l,avgerror_bp / instances, avgerror_mv / instances);
     
 end
 
-semilogy(2:lmax, runs(1,:), '-or', 2:lmax, runs(2, :), '-db', 2:lmax, runs(3,:), '-dk');
-legend('Simplified BP', 'Majority Voting', 'Power Iteration');
+semilogy(2:lmax, runs(1,:), '-or', 2:lmax, runs(2, :), '-db', 2:lmax, runs(3,:), '-dk', 2:lmax, runs(4,:), '-dr');
+legend('Simplified BP', 'Majority Voting', 'Power Iteration', 'EM');
 title(sprintf('Average Error over %d instances, each with %d iterations. m=%d, n=%d', instances, T_bp, m, n))
 xlabel('l');
 ylabel('P(Error)');
