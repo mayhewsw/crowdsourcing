@@ -5,16 +5,16 @@ clear
 %% Parameters Section
 
 % number of instances to average over
-instances = 10;
-n=100;
-m=100;
+instances = 100;
+n=2000;
+m=1000;
 alpha = 6;
 beta = 2;
 
 % max size l to run to
 lmax = 15;
 
-algs_to_run = {'mv', 'iwmv', 'em', 'em_with_priors', 'simplified_bp', 'hits'};
+algs_to_run = {'mv', 'iwmv', 'hits', 'em_with_priors', 'em', 'simplified_bp'};
 numalgs = numel(algs_to_run);
 
 % used to store all runs.

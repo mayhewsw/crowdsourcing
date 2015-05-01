@@ -6,13 +6,14 @@ function [ pHat, tHat ] = iwmv( A )
 
 % initialization
 v = ones(m,1);
-T = A~=0;
-L=2; % number of labels?
+L=2; % number of labels
 
+% estimated labels.
 y = zeros(n,1);
 w = zeros(m,1);
 
 Z = A';
+T = Z~=0;
 
 for iter=1:10
    
@@ -35,22 +36,22 @@ for iter=1:10
     
     % the w loop
     for i=1:m
-        num = 0;
-        for j=1:n
-            num = num + Z(i,j) == y(j);
-        end
+        col = Z(i,:);
+        num = sum(col == y');
+        
         denom = sum(T(i,:));
         w(i) = num / denom;
     end
     w(isnan(w)) = 0 ;
     
     % the v loop
-    v = L*w -1;
+    v = L*w - 1;
     
 end
 
+% dummy var...
 pHat = 1;
-tHat = -y;
+tHat = y;
 
 end
 
