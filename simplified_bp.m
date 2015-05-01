@@ -1,4 +1,4 @@
-function [ pHat, tHat, T ] = simplified_bp( A )
+function [ pHat, tHat] = simplified_bp( A )
 %Simplified BP
 %   As described in class.
 
