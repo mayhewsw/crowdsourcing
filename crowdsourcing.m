@@ -22,6 +22,7 @@ runs = zeros(numalgs, lmax-1);
 
 %% Algorithm Section
 for l=2:lmax
+    fprintf('l=%d\n', l);
     
     allruns = zeros(numalgs, instances);
     
@@ -52,7 +53,7 @@ for l=2:lmax
     
     runs(:, l-1) = scores;
     
-    fprintf('l=%d\n', l);
+    
     
 end
 
