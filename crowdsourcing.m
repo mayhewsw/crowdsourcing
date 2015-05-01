@@ -14,7 +14,7 @@ beta = 2;
 % max size l to run to
 lmax = 15;
 
-algs_to_run = {'mv', 'simplified_bp'};
+algs_to_run = {'mv', 'iwmv', 'em', 'em_with_priors', 'simplified_bp', 'hits'};
 numalgs = numel(algs_to_run);
 
 % used to store all runs.
