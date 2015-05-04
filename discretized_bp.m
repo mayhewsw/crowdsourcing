@@ -6,7 +6,7 @@ function [ pHat, tHat ] = discretized_bp( A )
 pHat = 0;
 
 % find a list of all edges.
-[row,col,v] = find(A~=0);
+[row,col,~] = find(A~=0);
 edges = [row col];
 
 % note: first col of edges is tasks, second col is workers. Each tuple
@@ -21,11 +21,11 @@ ymap = containers.Map('KeyType','double', 'ValueType', 'double');
 
 for r=1:size(edges,1)
     edge = edges(r,:);
-    a = edge(1);
-    b = edge(2);
+    i = edge(1);
+    a = edge(2);
     
-    xmap(frmt(a,b,+1)) = rand;
-    xmap(frmt(a,b,-1)) = rand;
+    xmap(frmt(i,a,+1)) = rand;
+    xmap(frmt(i,a,-1)) = rand;
     
 end
 
@@ -34,7 +34,7 @@ end
 T = 2;
 
 % how many chunks to split p into?
-chunks = 3;
+chunks = 10;
 pVals = 0:(1/chunks):0.99;
 pVals = pVals + 1/(2*chunks);
 
@@ -42,18 +42,18 @@ pVals = pVals + 1/(2*chunks);
 for iter=1:T
     fprintf('iteration %d\n', iter);
     % update y
-    for p=pVals
-        bpdf = betapdf(p, alpha,beta);
-        for r=1:size(edges,1);
-            % reverse edge because it is y...
-            edge = edges(r,:);
-            i = edge(1);
-            a = edge(2);
+    for r=1:size(edges,1);
+        psum = 0;
+        edge = edges(r,:);
+        i = edge(1);
+        a = edge(2);
+        
+        % get neighbors of a (column in A)
+        [nbrs,~,~] = find(A(:,a)~=0);
+        
+        for p=pVals
+            bpdf = betapdf(p, alpha,beta); % this is very slow...
             
-            % get neighbors of a (column in A)
-            [nbrs,~,~] = find(A(:,a)~=0);
-            
-            % get neighbors of a, excluding i
             prodTerm = 1;
             for j=nbrs' % matlab only iterates through row vectors.
                 if j == i
@@ -76,25 +76,31 @@ for iter=1:T
             end
             
             ymap(frmt(a,i,p)) = bpdf * prodTerm;
+            psum = psum + bpdf * prodTerm;
             
         end
-    end
-    
-    % normalize the ymap?
-    ysum = sum(cell2mat(values(ymap)));
-    for k=keys(ymap)
-        ymap(k{1}) = ymap(k{1}) / ysum;
+        
+        % normalize here... over ps
+        for p=pVals
+            ymap(frmt(a,i,p)) = ymap(frmt(a,i,p)) / psum;
+        end
+        
+        
     end
     
     % update x
-    for tval=[-1 1]
-        for r=1:size(edges,1);
-            edge = edges(r,:);
-            i = edge(1);
-            a = edge(2);
-            
-            % get neighbors of i (row in A)
-            [~,nbrs,~] = find(A(i,:)~=0);
+    
+    for r=1:size(edges,1);
+        edge = edges(r,:);
+        i = edge(1);
+        a = edge(2);
+        
+        % get neighbors of i (row in A)
+        [~,nbrs,~] = find(A(i,:)~=0);
+        
+        tsum = 0;
+        
+        for tval=[-1 1]
             prodTerm = 1;
             for b=nbrs
                 if b == a
@@ -116,14 +122,15 @@ for iter=1:T
             end
             
             xmap(frmt(i,a,tval)) = prodTerm;
+            tsum = tsum + prodTerm;
+        end
+        
+        % normalize over ts
+        for tval=[-1 1]
+            xmap(frmt(i,a,tval)) = xmap(frmt(i,a,tval)) / tsum;
         end
     end
-    
-    % normalize the xmap?
-    xsum = sum(cell2mat(values(xmap)));
-    for k=keys(xmap)
-        xmap(k{1}) = xmap(k{1}) / xsum;
-    end
+
 end
 
 % compute decision values.
@@ -166,6 +173,6 @@ end
 
 function [s]=frmt(i,j,v)
 %s = sprintf('%d,%d,%f',i,j,v);
-s = 100*i + 10*j + v;
+s = 10000*i + 100*j + v;
 end
 

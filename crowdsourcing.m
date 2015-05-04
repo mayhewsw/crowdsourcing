@@ -21,7 +21,7 @@ numalgs = numel(algs_to_run);
 runs = zeros(numalgs, lmax-1);
 
 %% Algorithm Section
-for l=15:lmax
+for l=14:lmax
     fprintf('l=%d\n', l);
     
     allruns = zeros(numalgs, instances);
