@@ -63,7 +63,22 @@ Sid
 \section{Introduction}
 [TODO]
 
-\section{Belief Propagation}
+\textbf{Problem definition and notation: }
+Define: 
+
+$t_i \in \{ +1, -1 \} $: variables of interest to be predicted
+
+$p_j \in [0,1]$: Latent variable 
+
+$A_{ij}\in \{+1, -1\}$: Observations 
+
+$
+g_{ij}(t_i,p_j) = p_j^ {  \mathbf{I} \lbrace A_{ij} = t_i \rbrace } \times (1-p_j)^{ \mathbf{I} \lbrace A_{ij} \neq t_i \rbrace}
+$
+
+
+\section{Methods}
+\subsection{Belief Propagation}
 [TODO: explanation about derivations]
 
 $$
@@ -91,6 +106,52 @@ b_i^L(t_i) \propto  \exp \left\lbrace  - \sum_{j \in V_R} \sum_{p_j}  b_j^R(p_j)
 b_j^R(p_j) \propto \exp \left\lbrace  - \sum_{i \in V_L} \sum_{t_i}  b_i^L(t_i) \psi_{ij}(t_i, p_j)   \right\rbrace 
 \end{cases}
 $$
+
+\subsection{Expectation-Maximization}
+Consider having the following prior on each $p_j$: 
+$$
+c + (1-c)Z_j, \quad \text{ where } Z_j \sim \text{Beta}(\alpha_j, \beta_j) 
+$$
+The full likelihood: 
+$L(p; t) = \prod_{i,j} g_{ij}(t_i,p_j) \prod_j \left( c+ \frac{1-c}{B(\alpha_j, \beta_j)} p_j^{\alpha_j-1} (1-p_j)^{\beta_j-1}  \right) $
+
+The likelihood for worker $j$: 
+\begin{align*}
+L_j(p; t) &= \prod_{i} g_{ij}(t_i,p_j) \left( c+ \frac{1-c}{B(\alpha_j, \beta_j)} p_j^{\alpha_j-1} (1-p_j)^{\beta_j-1}  \right) \\
+&= \frac{1-c}{B(\alpha_j, \beta_j)}p_j^{ \alpha_j-1 + \sum_i \mathbf{I} \lbrace A_{ij} = t_i \rbrace }  (1-p_j)^{ \beta_j-1 + \sum_i \mathbf{I} \lbrace A_{ij} \neq t_i \rbrace } + cp_j^{\sum_i \mathbf{I} \lbrace A_{ij} = t_i \rbrace } (1-p_j)^{  \sum_i \mathbf{I} \lbrace A_{ij} \neq t_i \rbrace } 
+\end{align*}
+
+\textbf{E-step:} 
+
+Suppose $t_i \sim q_i$. Then:
+\begin{align*}
+Q_j(p) =\mathbb{E}_{t}\left[ \ln L_j(p; t) \right] = \sum_tq(t) \Bigg[&  
+\ln \frac{1-c}{B(\alpha_j, \beta_j)} + \left(  { \alpha_j-1 + \sum_i \mathbf{I} \lbrace A_{ij} = t_i \rbrace } \right)  \ln p_j  \\ &+ \left( { \beta_j-1 + \sum_i \mathbf{I} \lbrace A_{ij} \neq t_i \rbrace } \right) \ln (1-p_j)  \\ 
+&+ \ln c + \left( \sum_i \mathbf{I} \lbrace A_{ij} = t_i \rbrace \right) \ln p_j + \left( {  \sum_i \mathbf{I} \lbrace A_{ij} \neq t_i \rbrace } \right) \ln (1-p_j) \Bigg], 
+\end{align*}
+which can be simplified to
+\begin{align*}
+Q_j(p) =   
+\ln \frac{1-c}{B(\alpha_j, \beta_j)}  + \ln c +  \left(   \alpha_j-1 \right)  \ln p_j  + \left( \beta_j - 1  \right) \ln (1-p_j) +  \Bigg[&  
+\ln p_j \sum_i q(A_{ij}) +  \ln (1-p_j) \sum_i q(-A_{ij}) \Bigg], 
+\end{align*}
+
+where 
+$$
+q_i(t_i) = \frac{ \prod_{j} g_{ij}(t_i, p_j) }{ \sum_{t_i} \prod_{j} g_{ij}(t_i, p_j)   }  \quad \quad (1)
+$$
+
+\textbf{M-step: }
+Taking derivative with respect to $p_j$: 
+$$
+\frac{\partial Q_j}{\partial p_j} = \frac{\alpha_j - 1 + \sum_jq(A_{ij})}{p_j} + \frac{\beta_j-1  + \sum_j q(-A_{ij}) }{1-p_j} = 0
+$$
+which results in 
+$$
+p_j = \frac{ \alpha_j - 1 + \sum_jq(A_{ij}) }{ \alpha_j + \beta_j-2 + \sum_jq(A_{ij})  + \sum_j q(-A_{ij})  }
+$$
+
+
 
 
 \section{Experiments}
