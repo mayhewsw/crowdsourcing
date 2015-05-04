@@ -5,16 +5,16 @@ clear
 %% Parameters Section
 
 % number of instances to average over
-instances = 100;
-n=2000;
-m=1000;
+instances = 10;
+n=100;
+m=100;
 alpha = 6;
 beta = 2;
 
 % max size l to run to
 lmax = 15;
 
-algs_to_run = {'mv', 'iwmv', 'hits', 'em_with_priors', 'em', 'simplified_bp'};
+algs_to_run = {'mv', 'discretized_bp'};
 numalgs = numel(algs_to_run);
 
 % used to store all runs.
@@ -49,7 +49,7 @@ for l=2:lmax
     means = mean(allruns, 2);
     stds = std(allruns, 0, 2) / sqrt(instances);
     
-    scores = means + stds;
+    scores = means + stds
     
     runs(:, l-1) = scores;
     

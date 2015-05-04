@@ -19,13 +19,17 @@ for iter=1:T
     
     % update x
     for i=1:n
-        for j=1:m
-            x(i,j) = A(i, :) * y(:, i) - A(i,j)*y(j,i);
-        end
+        
+        x(i,:) = -A(i,:)'.*y(:,i) + A(i, :) * y(:, i);
+        
+%         for j=1:m
+%             x(i,j) = A(i, :) * y(:, i) - A(i,j)*y(j,i);
+%         end
     end
     
     % update y
     for i=1:n
+        
         for j=1:m
             y(j,i) = A(:, j)' * x(:, j) - A(i,j)*x(i,j);
         end
