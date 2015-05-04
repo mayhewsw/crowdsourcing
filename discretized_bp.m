@@ -1,6 +1,6 @@
 function [ pHat, tHat ] = discretized_bp( A )
-%UNTITLED2 Summary of this function goes here
-%   Detailed explanation goes here
+% This is like simplified BP, except we actually
+% use the update rules.
 
 % dummy variable.
 pHat = 0;
@@ -10,14 +10,14 @@ pHat = 0;
 edges = [row col];
 
 % note: first col of edges is tasks, second col is workers. Each tuple
-% (i,j)
-% represents an edge from task i to worker j.
+% (i,j) represents an edge from task i to worker j.
 
 alpha = 6;
 beta = 2;
 
 % randomly initialize x
-xmap = containers.Map();
+xmap = containers.Map('KeyType','double', 'ValueType', 'double');
+ymap = containers.Map('KeyType','double', 'ValueType', 'double');
 
 for r=1:size(edges,1)
     edge = edges(r,:);
@@ -31,19 +31,19 @@ end
 
 
 % because why not.
-T = 10;
+T = 2;
 
 % how many chunks to split p into?
-chunks = 5;
-pVals = 0.01:(1/chunks):1;
-pVals(end) = 0.99; % just keeps everything in the range of 0,1...
+chunks = 3;
+pVals = 0:(1/chunks):0.99;
+pVals = pVals + 1/(2*chunks);
 
-ymap = containers.Map();
 
 for iter=1:T
     fprintf('iteration %d\n', iter);
     % update y
     for p=pVals
+        bpdf = betapdf(p, alpha,beta);
         for r=1:size(edges,1);
             % reverse edge because it is y...
             edge = edges(r,:);
@@ -64,7 +64,7 @@ for iter=1:T
                     (1 - (2*p-1)*A(j, a))*xmap(frmt(j,a,-1)));
                 
                 if(prodTerm==0)
-                    fprintf('is zero...');
+                    %fprintf('is zero...');
                 elseif(isnan(prodTerm))
                     fprintf('whoops... isnan\n')
                 elseif(isinf(prodTerm))
@@ -75,9 +75,15 @@ for iter=1:T
                 
             end
             
-            ymap(frmt(a,i,p)) = betapdf(p, alpha,beta) * prodTerm;
+            ymap(frmt(a,i,p)) = bpdf * prodTerm;
             
         end
+    end
+    
+    % normalize the ymap?
+    ysum = sum(cell2mat(values(ymap)));
+    for k=keys(ymap)
+        ymap(k{1}) = ymap(k{1}) / ysum;
     end
     
     % update x
@@ -99,7 +105,7 @@ for iter=1:T
                 for pb=pVals
                     innersum = innersum + ymap(frmt(b,i,pb)) * (pb*(A(i,b)==tval) + (1-pb)*(A(i,b)~=tval));
                 end
-                prodTerm = prodTerm * innersum;
+                prodTerm = prodTerm * ( innersum );
                 
                 if(isnan(prodTerm))
                     fprintf('whoops... isnan\n')
@@ -111,6 +117,12 @@ for iter=1:T
             
             xmap(frmt(i,a,tval)) = prodTerm;
         end
+    end
+    
+    % normalize the xmap?
+    xsum = sum(cell2mat(values(xmap)));
+    for k=keys(xmap)
+        xmap(k{1}) = xmap(k{1}) / xsum;
     end
 end
 
@@ -144,13 +156,16 @@ for tval=[-1 1]
     end
 end
 
-% nice.
-tHat = sign(xdec(:,2) - xdec(:,1));
+% nice. the order here matters, but it is backwards from what I thought it
+% should be...?!
+tHat = sign(xdec(:,1) - xdec(:,2));
+tHat'
 
 
 end
 
 function [s]=frmt(i,j,v)
-s = sprintf('%d,%d,%f',i,j,v);
+%s = sprintf('%d,%d,%f',i,j,v);
+s = 100*i + 10*j + v;
 end
 

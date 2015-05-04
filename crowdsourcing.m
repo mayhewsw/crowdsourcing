@@ -5,7 +5,7 @@ clear
 %% Parameters Section
 
 % number of instances to average over
-instances = 10;
+instances = 3;
 n=100;
 m=100;
 alpha = 6;
@@ -21,7 +21,7 @@ numalgs = numel(algs_to_run);
 runs = zeros(numalgs, lmax-1);
 
 %% Algorithm Section
-for l=2:lmax
+for l=15:lmax
     fprintf('l=%d\n', l);
     
     allruns = zeros(numalgs, instances);
