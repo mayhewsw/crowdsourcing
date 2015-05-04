@@ -8,7 +8,7 @@ pHat = 0;
 [V2,D]= eigs(A*A');
 D(1,1)
 
-tHat = -sign(V2(:,1)); 
+tHat = -sign(sign(sum(V2(:,1)))*V2(:,1)); 
 
 end
 
