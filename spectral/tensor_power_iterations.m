@@ -34,7 +34,7 @@ for e = 1 : E
     
     for k = 1: K
         temp2 = (u(:,k)' * W' * X);
-        
+            
         temp3 = sum( (u(:,k)'* W').^2 );
         
         eval(k) = mean(temp2.^3,2) - 3*v*( u(:,k)'* W'*m * temp3 );

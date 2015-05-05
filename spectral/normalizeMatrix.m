@@ -6,16 +6,17 @@ assert(length(Zcj) == length(Zbj));
 
 n = length(Zaj); 
 
-A = zeros(1,n); 
-B = zeros(1,n);
+A = zeros(size(Zaj,2)); 
+B = zeros(size(Zaj,2));
 for i = 1:n 
-    A(i) = Zaj(i) * Zbj(i); 
-    B(i) = Zbj(i) * Zcj(i); 
+    A = Zaj(i,:)' * Zbj(i,:); 
+    B = Zbj(i,:)' * Zcj(i,:); 
 end
 A = A / n; 
 B = B / n; 
 
-Za_hat = zeros(1,n); 
+Za_hat = zeros(n,size(Zaj,2));
+tmp_variable = B * (A^(-1)); 
 for i = 1:n
-    Za_hat(i) = B(i) * (A(i)^(-1)) * Zaj(i); 
+    Za_hat(i,:) = tmp_variable * Zaj(i,:)'; 
 end 
