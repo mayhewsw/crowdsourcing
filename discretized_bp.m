@@ -165,7 +165,7 @@ end
 
 % nice. the order here matters, but it is backwards from what I thought it
 % should be...?!
-tHat = sign(xdec(:,1) - xdec(:,2));
+tHat = sign(xdec(:,2) - xdec(:,1));
 tHat'
 
 
