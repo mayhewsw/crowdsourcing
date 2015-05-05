@@ -125,7 +125,7 @@ We refer to this algorithm as \texttt{iwmv} in our code.
 
 \begin{figure}[t]
 \centering
-\includegraphics[scale=0.3]{missing.png}
+\includegraphics[scale=0.6]{mv_simplified.png}
 \caption{Simplified BP with manageable parameters. (Missing... as of writing, this graphic is not available because of computer issues)}
 \label{fig:simp}
 \end{figure}
@@ -149,7 +149,7 @@ We put considerable time into implementations of tree-reweighted message passing
 
 \begin{figure}[t]
 \centering
-\includegraphics[scale=0.5]{mv_discretized.png}
+\includegraphics[scale=0.6]{mv_discretized.png}
 \caption{Majority Voting and Discretized BP. (This is over a small problem size, and only for $\ell=14$ and $\ell=15$ because of slow running times)}
 \label{fig:disc}
 \end{figure}
@@ -190,9 +190,14 @@ We put considerable time into implementations of tree-reweighted message passing
 %b_j^R(p_j) \propto \exp \left\lbrace  - \sum_{i \in V_L} \sum_{t_i}  b_i^L(t_i) \psi_{ij}(t_i, p_j)   \right\rbrace 
 %\end{cases}
 %$$
-%
+
 
 \subsection*{EM derivation}
+Define
+\[
+g_{ij}(t_i, p_j) = p_j \mathbf{I} \left\lbrace  A_{ij}=  t_i  \right\rbrace +  (1-p_j ) \mathbf{I} \left\lbrace  A_{ij} \neq  t_i  \right\rbrace
+\]
+
 Consider having the following prior on each $p_j$: 
 $$
 c + (1-c)Z_j, \quad \text{ where } Z_j \sim \text{Beta}(\alpha_j, \beta_j) 
